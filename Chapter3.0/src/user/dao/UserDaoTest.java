@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -110,6 +111,14 @@ public class UserDaoTest {
 		List<User> users0 = dao.getAll();	
 		assertThat(users0.size(), is(0));
 		
+	}
+	
+	@Test(expected=DataAccessException.class)
+	public void duplciateKey() {
+		dao.deleteAll();
+		
+		dao.add(user1);
+		dao.add(user1);
 	}
 	
 	private void checkSameUser(User user1, User user2) {
