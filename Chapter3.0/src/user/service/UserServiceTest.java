@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import user.dao.UserDao;
 import user.domain.Level;
@@ -31,7 +32,7 @@ public class UserServiceTest {
 	@Qualifier
 	ApplicationContext context;
 
-	@Autowired DataSource dataSource;
+	@Autowired PlatformTransactionManager transactionManager;
 	
 	UserService userService;
 	List<User> users;
@@ -43,11 +44,11 @@ public class UserServiceTest {
 		this.userService = this.context.getBean("userService", UserService.class);
 		
 		users = Arrays.asList(
-					new User("bumjin", "박범진", "p1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER-1, 0),
-					new User("joytouch", "강명성", "p2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
-					new User("erwins", "신승환", "p3", Level.SILVER, 60, MIN_RECOMEND_FOR_GOLD -1),
-					new User("madnite1", "이상호", "p4", Level.SILVER, 60, MIN_RECOMEND_FOR_GOLD),
-					new User("green", "오민규", "p5", Level.GOLD, 100, 100)
+					new User("bumjin", "박범진", "p1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER-1, 0, "skarudvy0202@naver.com"),
+					new User("joytouch", "강명성", "p2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0, "skarudvy0202@gmail.com"),
+					new User("erwins", "신승환", "p3", Level.SILVER, 60, MIN_RECOMEND_FOR_GOLD -1, "skarudvy0202@daum.net"),
+					new User("madnite1", "이상호", "p4", Level.SILVER, 60, MIN_RECOMEND_FOR_GOLD, "skarudvy0202@naver.com"),
+					new User("green", "오민규", "p5", Level.GOLD, 100, 100, "e@e.com")
 				);
 	}
 	
@@ -95,7 +96,7 @@ public class UserServiceTest {
 	public void upgradeAllOrNothing() throws Exception {
 		UserService testUserService = new TestUserService(users.get(3).getId());
 		testUserService.setUserDao(this.userDao);
-		testUserService.setDataSource(this.dataSource);
+		testUserService.setTransactionManager(this.transactionManager);
 		
 		userDao.deleteAll();
 		for(User user : users) userDao.add(user);
